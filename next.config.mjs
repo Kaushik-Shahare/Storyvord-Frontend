@@ -36,6 +36,7 @@ const nextConfig = {
       },
     ];
   },
+  output: "standalone",
 };
 
 // Combine both plugins
