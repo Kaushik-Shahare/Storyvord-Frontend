@@ -35,8 +35,9 @@ export const USER_API =
 export const NEW_API_URL = USER_API;
 export const NEW_API_URL_V2 = USER_API;
 
-// export const USER_API = "http://0.0.0.0:8000";
-// export const NEW_API_URL = "http://0.0.0.0:8000";
+// export const USER_API = "localhost:8000/api"
+// export const NEW_API_URL = USER_API;
+// export const NEW_API_URL_V2 = USER_API;
 
 export const userTypes = [
   { value: "option1", label: "Option 1" },
