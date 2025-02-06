@@ -8,7 +8,7 @@ export const allReportName = [
   "compliance",
   "culture",
   "sustainability",
-  "suppliers",
+  "supplier",
 ] as const;
 
 export const getSuggestions = async (projectId: string) => {
