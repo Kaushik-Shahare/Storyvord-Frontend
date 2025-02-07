@@ -36,7 +36,7 @@ export default function Chatbot() {
     //   ? `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?session_id=${sessionId}&token=${token}`
     //   : `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?token=${token}&agent=1`;
     const wsUrl = sessionId
-      ? `wss://api-stage.storyvord.com/ws/ai_chat/?session_id=${sessionId}&token=${token}`
+      ? `wss://api-stage.storyvord.com/ws/ai_chat/?session_id=${sessionId}&token=${token}&agent=1`
       : `wss://api-stage.storyvord.com/ws/ai_chat/?token=${token}&agent=1`;
 
     const newWsClient = new W3CWebSocket(wsUrl);
