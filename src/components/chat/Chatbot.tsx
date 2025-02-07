@@ -32,9 +32,12 @@ export default function Chatbot() {
       clientRef.current.close();
     }
 
+    // const wsUrl = sessionId
+    //   ? `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?session_id=${sessionId}&token=${token}`
+    //   : `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?token=${token}&agent=1`;
     const wsUrl = sessionId
-      ? `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?session_id=${sessionId}&token=${token}`
-      : `wss://api-dev.storyvord.com:8001/ws/ai_assistant/?token=${token}&agent=1`;
+      ? `ws://35.200.152.122:8000/ws/ai_chat/?session_id=${sessionId}&token=${token}`
+      : `ws://35.200.152.122:8000/ws/ai_chat/?token=${token}&agent=1`;
 
     const newWsClient = new W3CWebSocket(wsUrl);
     clientRef.current = newWsClient;
@@ -98,7 +101,7 @@ export default function Chatbot() {
     if (!wsClient) {
       initializeWebSocket(currentSession?.session_id);
     }
-    
+
     const sendMessageToServer = () => {
       if (clientRef.current?.readyState === W3CWebSocket.OPEN) {
         const outgoingMessage = JSON.stringify({ message: question });
