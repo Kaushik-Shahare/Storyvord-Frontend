@@ -35,7 +35,8 @@ console.log(process.env.NEXT_PUBLIC_APP_ENV);
 // export const NEW_API_URL = USER_API;
 // export const NEW_API_URL_V2 = USER_API;
 
-export const USER_API = "http://35.200.152.122:8000/api";
+// export const USER_API = "http://35.200.152.122:8000/api";
+export const USER_API = "https://api-stage.storyvord.com/api";
 export const NEW_API_URL = USER_API;
 export const NEW_API_URL_V2 = USER_API;
 
