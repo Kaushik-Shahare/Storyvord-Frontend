@@ -32,6 +32,7 @@ export const registerUser = async (data: {
 
 export const userSignIn = async ({ email, password }: { email: string; password: string }) => {
   // const res = await fetch(`${USER_API}/auth/jwt/create/`, {
+  console.log("api url: ", NEW_API_URL_V2);
   const res = await fetch(`${NEW_API_URL_V2}/accounts/v2/login/`, {
     method: "POST",
     headers: {
