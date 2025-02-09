@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import ButtonGroup from "./ButtonGroup";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type Props = {
   setCreateScenesDialog: (value: boolean) => void;
@@ -9,6 +10,7 @@ type Props = {
   selectedScenes: number[];
 };
 const Navbar = ({ setCreateScenesDialog, setUploadScenesDialog, selectedScenes }: Props) => {
+  const route = useRouter();
   return (
     <header className=" flex justify-between mt-4 ">
       <Button
@@ -44,6 +46,7 @@ const Navbar = ({ setCreateScenesDialog, setUploadScenesDialog, selectedScenes }
           variant="outline"
           className=" flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
           disabled={selectedScenes.length === 0}
+          onClick={() => route.push("shots")}
         >
           <Image src="/icons/settings.svg" width={16} height={16} alt="download" />
           Convert to Shots

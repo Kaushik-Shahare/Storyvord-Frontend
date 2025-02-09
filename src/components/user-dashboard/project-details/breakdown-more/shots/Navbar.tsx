@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type Props = {
   //   setCreateScenesDialog: (value: boolean) => void;
@@ -8,6 +9,7 @@ type Props = {
   selectedShots: number[];
 };
 const Navbar = ({ selectedShots }: Props) => {
+  const route = useRouter();
   return (
     <header className=" flex justify-between mt-4 ">
       <Button
@@ -43,6 +45,7 @@ const Navbar = ({ selectedShots }: Props) => {
           variant="outline"
           className=" flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
           disabled={selectedShots?.length === 0}
+          onClick={() => route.push("previsualization")}
         >
           <Image src="/icons/settings.svg" width={16} height={16} alt="download" />
           Previsualization

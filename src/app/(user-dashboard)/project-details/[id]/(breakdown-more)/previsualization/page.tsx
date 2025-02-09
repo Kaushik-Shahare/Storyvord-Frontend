@@ -86,12 +86,12 @@ const DATA = [
 
 const Home = () => {
   return (
-    <div className="p-8">
-      <h1 className="text-xl md:text-2xl font-semibold">Previsualization</h1>
+    <div className="p-4">
+      <h1 className="text-xl font-semibold">Previsualization</h1>
       {DATA.map((scene) => (
         <div key={scene.id} className="mb-12 p-4">
-          <h2 className="text-xl font-semibold mb-2">{scene.title}</h2>
-          <p className="text-gray-600 mb-4">{scene.description}</p>
+          <h2 className="text-lg font-semibold mb-1">{scene.title}</h2>
+          <p className="text-gray-600 mb-4 text-base">{scene.description}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {scene.shots.map((shot) => (
               <ShotCard
