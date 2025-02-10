@@ -30,16 +30,26 @@ const announcementFormFields: FormFieldConfig<AnnouncementFormType>[] = [
     placeholder: "Title",
   },
   {
-    name: "message",
-    label: "Message",
-    type: "textarea",
-  },
-  {
     name: "recipients",
     label: "Recipients",
     type: "select",
     isMulti: true,
     placeholder: "Recipients",
+    options: [
+      { value: "admin", label: "Admin" },
+      { value: "member", label: "Member" },
+    ],
+  },
+  {
+    name: "message",
+    label: "Message",
+    type: "textarea",
+  },
+  {
+    name: "document",
+    label: "Attach Document (If any)",
+    type: "file",
+    optional: true,
   },
   {
     name: "is_urgent",
@@ -61,7 +71,8 @@ type Props = {
   createAnnouncement: (data: AnnouncementFormType) => void;
   isPending: boolean;
   isError: boolean;
-  initialData: any;
+  initialData?: AnnouncementFormType;
+  mode: "create" | "edit";
 };
 
 const CreateAnnouncementDialog = ({
@@ -73,18 +84,17 @@ const CreateAnnouncementDialog = ({
   isError,
   mode,
   initialData,
-}: Props & { mode: "create" | "edit"; initialData?: AnnouncementFormType }) => {
-  useEffect(() => {
-    announcementFormFields[2].options = crewList;
-    if (initialData) {
-      form.reset(initialData);
-    }
-  }, [crewList, initialData]);
-
+}: Props) => {
   const form = useForm({
     resolver: zodResolver(announcementFormSchema),
     defaultValues: announcementFormDefaultValues,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, form]);
 
   const onSubmit = (data: AnnouncementFormType) => {
     createAnnouncement(data);
@@ -93,7 +103,7 @@ const CreateAnnouncementDialog = ({
 
   return (
     <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)}>
-      <DialogContent className="w-[95%] lg:w-[1200px] p-0">
+      <DialogContent className="w-[95%] lg:w-[800px] p-0">
         <DialogHeader className="w-full p-4 bg-gray-200 rounded-tr-lg rounded-tl-lg max-h-16">
           <DialogTitle>
             {mode === "create" ? "Create Announcement" : "Edit Announcement"}
@@ -105,21 +115,9 @@ const CreateAnnouncementDialog = ({
               onSubmit={form.handleSubmit(onSubmit)}
               className="justify-center flex flex-col p-0 lg:px-4 lg:pr-10"
             >
-              <section className=" grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="border-r border-black/20">
-                  <div className=" p-1 lg:p-4 border-b border-black/20">
-                    <h3 className=" text-md font-semibold">Select Department</h3>
-                    <p className=" text-sm text-gray-500">
-                      Please select recipients from crew or mailing lists.
-                    </p>
-                  </div>
-                  <p className=" text-center text-sm text-gray-500 mt-4">No Department found</p>
-                </div>
-
-                <div className=" md:col-span-2">
-                  <RenderFormFields form={form} formFields={announcementFormFields} />
-                </div>
-              </section>
+              <div className=" md:col-span-2">
+                <RenderFormFields form={form} formFields={announcementFormFields} />
+              </div>
               {isError && (
                 <p className="text-center text-sm text-red-600 font-semibold">
                   Failed to save the announcement.
@@ -129,7 +127,7 @@ const CreateAnnouncementDialog = ({
                 <Button type="button" onClick={() => setOpenDialog(false)} variant="ghost">
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" className=" px-8" disabled={isPending}>
                   {isPending ? "Saving..." : mode === "create" ? "Save" : "Update"}
                 </Button>
               </DialogFooter>

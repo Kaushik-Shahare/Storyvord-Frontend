@@ -4,7 +4,7 @@ import { customFetch } from "./api";
 
 export const getAllAnnouncements = async (projectId: string) => {
   return customFetch(
-    `${NEW_API_URL_V2}/announcement/v2/project-announcements/?project_id=${projectId}`,
+    `${NEW_API_URL_V2}/announcement/project-announcements/?project_id=${projectId}`,
     {
       method: "GET",
     }
@@ -21,8 +21,14 @@ export const CreateAnnouncement = async (announcementData: Announcements) => {
   });
 };
 
-export const updateAnnouncement = async (announcementData: Announcements) => {
-  return customFetch(`${NEW_API_URL_V2}/announcement/v2/project-announcements/`, {
+export const updateAnnouncement = async ({
+  announcementData,
+  id,
+}: {
+  announcementData: Announcements;
+  id: number;
+}) => {
+  return customFetch(`${NEW_API_URL_V2}/announcement/v2/project-announcements/${id}/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
