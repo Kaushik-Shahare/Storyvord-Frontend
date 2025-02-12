@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useGetProjectRequirements } from "@/lib/react-query/queriesAndMutations/project";
 import {
   useGetAiWorkStatus,
-  useGetRequirements,
   useGetSuggestions,
   useStartAIWork,
 } from "@/lib/react-query/queriesAndMutations/aiSuggestions";
@@ -16,6 +14,9 @@ import CrewPage from "@/components/report/CrewPage";
 import ReportDetails from "@/components/report/ReportDetails";
 import SuppliersPage from "@/components/report/SuppliersPage";
 import Tabs from "@/components/Tabs";
+import { Panel, PanelGroup } from "react-resizable-panels";
+import ResizeHandle from "@/components/report/ResizeHandle";
+import ReportAIChat from "@/components/report/ReportAIChat";
 
 const tabs = [
   "Crew",
@@ -86,76 +87,83 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
-
-      {activeTab === "Crew" && (
-        <CrewPage
-          report={allAiReports?.data.suggested_crew}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-        />
-      )}
-      {activeTab === "Suppliers" && (
-        <SuppliersPage
-          report={allAiReports?.data.suggested_suppliers}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-        />
-      )}
-      {activeTab === "Logistics" && (
-        <ReportDetails
-          report={allAiReports?.data.suggested_logistics}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          refetch={refetch}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-          name="logistics"
-        />
-      )}
-      {activeTab === "Compliance" && (
-        <ReportDetails
-          report={allAiReports?.data.suggested_compliance}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          refetch={refetch}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-          name="compliance"
-        />
-      )}
-      {activeTab === "Culture" && (
-        <ReportDetails
-          report={allAiReports?.data.suggested_culture}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          refetch={refetch}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-          name="culture"
-        />
-      )}
-      {activeTab === "Budget" && (
-        <ReportDetails
-          report={allAiReports?.data.suggested_budget}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          refetch={refetch}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-          name="budget"
-        />
-      )}
-      {activeTab === "Sustainability" && (
-        <ReportDetails
-          report={allAiReports?.data.suggested_sustainability}
-          isPending={isPending || isPendingAiStatus}
-          isError={isError || isErrorAiStatus}
-          refetch={refetch}
-          handleRegenerateAiWork={handleRegenerateAiWork}
-          name="sustainability"
-        />
-      )}
-    </div>
+    <PanelGroup direction="horizontal" className="container mx-auto p-4">
+      <Panel>
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
+        <div className=" overflow-y-scroll max-h-[85vh]">
+          {activeTab === "Crew" && (
+            <CrewPage
+              report={allAiReports?.data.suggested_crew}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+            />
+          )}
+          {activeTab === "Suppliers" && (
+            <SuppliersPage
+              report={allAiReports?.data.suggested_suppliers}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+            />
+          )}
+          {activeTab === "Logistics" && (
+            <ReportDetails
+              report={allAiReports?.data.suggested_logistics}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              refetch={refetch}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+              name="logistics"
+            />
+          )}
+          {activeTab === "Compliance" && (
+            <ReportDetails
+              report={allAiReports?.data.suggested_compliance}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              refetch={refetch}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+              name="compliance"
+            />
+          )}
+          {activeTab === "Culture" && (
+            <ReportDetails
+              report={allAiReports?.data.suggested_culture}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              refetch={refetch}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+              name="culture"
+            />
+          )}
+          {activeTab === "Budget" && (
+            <ReportDetails
+              report={allAiReports?.data.suggested_budget}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              refetch={refetch}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+              name="budget"
+            />
+          )}
+          {activeTab === "Sustainability" && (
+            <ReportDetails
+              report={allAiReports?.data.suggested_sustainability}
+              isPending={isPending || isPendingAiStatus}
+              isError={isError || isErrorAiStatus}
+              refetch={refetch}
+              handleRegenerateAiWork={handleRegenerateAiWork}
+              name="sustainability"
+            />
+          )}
+        </div>
+      </Panel>
+      <ResizeHandle />
+      <Panel defaultSize={30} maxSize={70} minSize={20}>
+        <ReportAIChat />
+      </Panel>
+    </PanelGroup>
   );
 };
 
