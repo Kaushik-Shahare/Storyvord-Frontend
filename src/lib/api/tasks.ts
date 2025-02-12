@@ -12,19 +12,13 @@ export const getTasks = async (project_id: string) => {
 };
 
 export const getProjectTasks = async (projectId: string) => {
-  return customFetch(`${NEW_API_URL_V2}/tasks/v2/tasks/${projectId}/`, {
+  return customFetch(`${NEW_API_URL_V2}/tasks/project-tasks/${projectId}/`, {
     method: "GET",
   });
 };
 
-export const createNewTask = async ({
-  taskData,
-  projectId,
-}: {
-  taskData: taskFormType;
-  projectId: string;
-}) => {
-  return customFetch(`${NEW_API_URL_V2}/tasks/v2/tasks/`, {
+export const createNewTask = async (taskData: taskFormType & { ProjectId: string }) => {
+  return customFetch(`${NEW_API_URL_V2}/tasks/project-tasks/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +28,7 @@ export const createNewTask = async ({
 };
 
 export const deleteTask = async (taskId: number) => {
-  return customFetch(`${NEW_API_URL_V2}/tasks/v2/tasks/${taskId}/`, {
+  return customFetch(`${NEW_API_URL_V2}/tasks/project-tasks/${taskId}/`, {
     method: "DELETE",
   });
 };

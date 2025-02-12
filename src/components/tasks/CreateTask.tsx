@@ -42,29 +42,29 @@ const formFields: FormFieldConfig<taskFormType>[] = [
     layout: "row",
   },
   {
-    name: "due_date",
+    name: "duedate",
     label: "Task Deadline",
     type: "date",
     layout: "row",
   },
   {
-    name: "tags",
+    name: "priority",
     label: "Tags",
     type: "select",
     placeholder: "Task tags",
     options: taskStatus,
     layout: "row",
   },
+  // {
+  //   name: "created_by",
+  //   label: "Created By",
+  //   type: "select",
+  //   isMulti: true,
+  //   options: [],
+  //   layout: "row",
+  // },
   {
-    name: "created_by",
-    label: "Created By",
-    type: "select",
-    isMulti: true,
-    options: [],
-    layout: "row",
-  },
-  {
-    name: "assigned_to",
+    name: "AssignedTo",
     label: "Assign To",
     type: "select",
     isMulti: true,
@@ -103,28 +103,27 @@ const CreateTask: FC<CreateTaskProps> = ({
 }) => {
   useEffect(() => {
     if (crewList && crewList.length > 0) {
-      // formFields[4].options = crewList;
-      formFields[5].options = crewList;
+      formFields[4].options = crewList;
     }
   }, [crewList]);
   const defaultData: taskFormType = taskEditing
     ? {
         title: taskEditing.title,
         status: taskEditing.status,
-        due_date: taskEditing.due_date,
-        tags: taskEditing.tags,
-        created_by: taskEditing.created_by,
-        assigned_to: taskEditing.assigned_to,
+        duedate: taskEditing.duedate,
+        priority: taskEditing.priority,
+        // created_by: taskEditing.created_by,
+        AssignedTo: taskEditing.AssignedTo,
         description: taskEditing.description,
         attachment: taskEditing.attachment,
       }
     : {
         title: "",
         status: "not-started", // Default to "not-started"
-        due_date: "",
-        tags: "",
-        created_by: 0, // Set a default value for created_by
-        assigned_to: [],
+        duedate: "",
+        priority: "",
+        // created_by: 0, // Set a default value for created_by
+        AssignedTo: [],
         description: "",
         attachment: undefined,
       };
@@ -140,15 +139,14 @@ const CreateTask: FC<CreateTaskProps> = ({
         ...taskEditing,
         title: formData.title,
         status: formData.status,
-        due_date: formData.due_date,
-        tags: formData.tags,
-        created_by: formData.created_by,
-        assigned_to: formData.assigned_to,
+        duedate: formData.duedate,
+        priority: formData.priority,
+        // created_by: formData.created_by,
+        AssignedTo: formData.AssignedTo,
         description: formData.description,
         attachment: formData.attachment,
       };
       handleSubmission(taskData);
-      setFormOpen(!formOpen);
       form.reset();
     } catch (e) {
       form.setError("root", {

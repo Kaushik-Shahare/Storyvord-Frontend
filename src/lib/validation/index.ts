@@ -85,12 +85,12 @@ export const projectFormSchema = z.object({
 
 export const taskFormSchema = z.object({
   title: z.string().min(1, { message: "Task title is required" }),
+  description: z.string().optional(),
   status: z.string().min(1, { message: "Status is required" }),
-  due_date: z.string().date(),
-  tags: z.string().min(1, { message: "Tags is required" }),
-  created_by: z.number().min(1, { message: "Created by is required" }),
-  assigned_to: z.array(z.number()).min(1, "Minimum 1 required"),
-  description: z.string().min(1, { message: "Description is required" }),
+  priority: z.string().min(1, { message: "Tags is required" }),
+  duedate: z.string().date(),
+  AssignedTo: z.array(z.number()).min(1, "Minimum 1 required"),
+  // created_by: z.number().min(1, { message: "Created by is required" }),
   attachment: z
     .array(
       z.union([

@@ -17,6 +17,7 @@ import ToolBar from "@/components/tasks/ToolBar";
 import { taskFormType, taskType } from "@/types";
 import TaskSkeleton from "@/components/TaskSkeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { formatError } from "@/lib/utils";
 
 const TaskPage = ({ params }: { params: { id: string } }) => {
   const { data: tasksList, isPending: isLoadingTask } = useGetProjectTasks(params.id);
@@ -59,22 +60,29 @@ const TaskPage = ({ params }: { params: { id: string } }) => {
 
   const createTask = async (task: taskFormType) => {
     const newTask = {
-      project: params.id,
       title: task.title,
-      tags: task.status,
-      created_by: task.created_by,
-      attachment: task.attachment,
       description: task.description,
-      assigned_to: task.assigned_to,
-      due_date: task.due_date,
       status: task.status || "in-progress",
+      priority: task.priority,
+      duedate: task.duedate,
+      AssignedTo: task.AssignedTo,
+      ProjectId: params.id,
+      // tags: task.status,
+      // created_by: task.created_by,
+      // attachment: task.attachment,
       // completion_requested: false,
       // requester: null,
     };
     try {
-      await createNewTaskMutation({ taskData: newTask, projectId: params.id });
+      await createNewTaskMutation(newTask);
+      setFormOpen(!formOpen);
     } catch (error) {
-      console.log("failed to create new task", error);
+      const { title, description } = formatError(error);
+      toast({
+        title,
+        description,
+        variant: "destructive",
+      });
     }
   };
 

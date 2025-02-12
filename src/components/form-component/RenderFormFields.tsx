@@ -117,6 +117,7 @@ const RenderFormFields = <TFormValues extends FieldValues>({
                         type === "email" ||
                         type === "number" ||
                         type === "time" ||
+                        type === "date" ||
                         type === "datetime-local") && (
                         <Input
                           type={type}
@@ -127,9 +128,9 @@ const RenderFormFields = <TFormValues extends FieldValues>({
                           disabled={fieldConfig.disabled}
                         />
                       )}
-                      {type === "date" && (
+                      {/* {type === "date" && (
                         <DatePicker value={field.value} onChange={(date) => field.onChange(date)} />
-                      )}
+                      )} */}
 
                       {type === "textarea" && (
                         <Textarea
