@@ -107,7 +107,9 @@ const Register = () => {
             </div>
           )}
           {step === 3 && userType === 1 && (
-            <CreateProjectForm prevStep={prevStep} handleSkipOnBoard={handleSkipOnBoard} />
+            <div className="w-full lg:w-4/5">
+              <CreateProjectForm prevStep={prevStep} handleSkipOnBoard={handleSkipOnBoard} />
+            </div>
           )}
 
           {step === 2 && userType === 2 && (
