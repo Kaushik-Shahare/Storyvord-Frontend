@@ -1,5 +1,6 @@
 services:
   storyvord-frontend-dev:
+    image: storyvord-frontend-dev:latest
     container_name: storyvord-frontend-dev
     build: .
     ports:
