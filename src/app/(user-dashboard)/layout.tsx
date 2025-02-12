@@ -49,7 +49,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                 <Suspense fallback={<Loading />}>{children}</Suspense>
               </div>
               <Toaster />
-              <Chatbot />
+              {!path.includes("reports") && <Chatbot />}
             </>
           ) : (
             <Loading />
