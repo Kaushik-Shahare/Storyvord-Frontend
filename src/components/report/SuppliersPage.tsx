@@ -43,9 +43,14 @@ const SuppliersPage = ({ report, isPending, isError, handleRegenerateAiWork }: P
         <p className="text-xl font-poppins-semibold text-red-600">
           An error occurred while fetching data. Please try again.
         </p>
-        {/* <Button variant="outline" onClick={() => refetch()}>
-          Try again
-        </Button> */}
+        <Button
+          onClick={() => handleRegenerateAiWork("supplier")}
+          className="font-poppins-medium text-sm"
+          size="sm"
+          variant="outline"
+        >
+          Re-Generate
+        </Button>
       </div>
     );
   }
@@ -92,7 +97,7 @@ const SuppliersPage = ({ report, isPending, isError, handleRegenerateAiWork }: P
             <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
               Location: {location}
             </h2>
-            <main className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <main className="grid grid-cols-1 gap-3">
               {report[location].map((supplier, index) => (
                 <SupplierCard key={`${location}-${index}`} supplier={supplier} />
               ))}

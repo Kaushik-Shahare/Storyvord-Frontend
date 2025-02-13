@@ -37,15 +37,44 @@ const ReportDetails = ({
         <p className="text-xl font-poppins-semibold text-red-600">
           An error occurred while fetching data. Please try again.
         </p>
-        <Button variant="outline" onClick={refetch}>
-          Try again
-        </Button>
+        <div className=" flex justify-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="font-poppins-medium text-sm"
+            onClick={refetch}
+          >
+            Try again
+          </Button>
+          <Button
+            onClick={() => handleRegenerateAiWork(name)}
+            className="font-poppins-medium text-sm"
+            size="sm"
+            variant="outline"
+          >
+            Re-Generate
+          </Button>
+        </div>
       </div>
     );
   }
 
   if (typeof report !== "string") {
-    return; // Exit if report is a string
+    return (
+      <div className="p-4 bg-yellow-50 border grid place-content-center gap-4 border-yellow-400 text-yellow-700 rounded-md mt-10 w-fit mx-auto">
+        <p className="text-center font-poppins-semibold w-fit">
+          Unable to display data. Please check the report format.
+        </p>
+        <Button
+          onClick={() => handleRegenerateAiWork(name)}
+          className="font-poppins-medium text-sm"
+          size="sm"
+          variant="outline"
+        >
+          Re-Generate
+        </Button>
+      </div>
+    );
   }
 
   const formatReport = (): string => {

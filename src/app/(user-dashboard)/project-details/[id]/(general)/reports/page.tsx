@@ -33,7 +33,7 @@ const defaultTabs = [
 ];
 
 const ReportsPage = () => {
-  // --- Tab & Dialog State ---
+  // Tab & Dialog State
   const [activeTab, setActiveTab] = useState(defaultTabs[0]);
   const [customTabs, setCustomTabs] = useState<{ title: string; description: string }[]>([]);
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -55,7 +55,6 @@ const ReportsPage = () => {
     }
   };
 
-  // --- Existing States & Effects ---
   const [aiWorkStatus, setAiWorkStatus] = useState<"pending" | "success">("pending");
   const [taskId, setTaskId] = useState<string | null>(() => localStorage.getItem("taskId"));
 
@@ -110,7 +109,7 @@ const ReportsPage = () => {
 
   return (
     <>
-      {/* Add Tab Dialog using shadcn/ui Dialog */}
+      {/* Add Tab Dialog */}
       <AddTabDialog
         open={isDialogOpen}
         setOpen={setDialogOpen}
@@ -134,7 +133,7 @@ const ReportsPage = () => {
               size="sm"
             >
               <Image src="/icons/plus.svg" height={20} width={20} alt="plus-icon" />
-              Add tab
+              Add
             </Button>
           </div>
 
