@@ -1,25 +1,23 @@
 import React from "react";
 import Image from "next/image";
-import ButtonGroup from "./ButtonGroup";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  setCreateScenesDialog: (value: boolean) => void;
-  setUploadScenesDialog: (value: boolean) => void;
-  selectedScenes: number[];
+  //   setCreateScenesDialog: (value: boolean) => void;
+  //   setUploadScenesDialog: (value: boolean) => void;
+  selectedShots: number[];
 };
-const Navbar = ({ setCreateScenesDialog, setUploadScenesDialog, selectedScenes }: Props) => {
+const Navbar = ({ selectedShots }: Props) => {
   const route = useRouter();
   return (
     <header className=" flex justify-between mt-4 ">
       <Button
         variant="outline"
         className="flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
-        onClick={() => setCreateScenesDialog(true)}
       >
         <Image src="/icons/plus.svg" width={16} height={16} alt="download" />
-        Create Scenes
+        Create Shots
       </Button>
       <div className=" flex gap-4">
         <Button
@@ -46,11 +44,11 @@ const Navbar = ({ setCreateScenesDialog, setUploadScenesDialog, selectedScenes }
         <Button
           variant="outline"
           className=" flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
-          disabled={selectedScenes.length === 0}
-          onClick={() => route.push("shots")}
+          disabled={selectedShots?.length === 0}
+          onClick={() => route.push("previsualization")}
         >
           <Image src="/icons/settings.svg" width={16} height={16} alt="download" />
-          Convert to Shots
+          Previsualization
         </Button>
       </div>
     </header>

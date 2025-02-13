@@ -201,8 +201,8 @@ export const projectdetailsItems: projectDetailItem[] = [
         icon: MdCamera,
       },
       {
-        text: "storyboard",
-        link: "storyboard",
+        text: "previsualization",
+        link: "previsualization",
         icon: MdGridView,
       },
       {
