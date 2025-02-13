@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
+import { ShotsShimmer } from "./ShotsShimmer";
 
 type Shot = {
   id: number;
@@ -90,6 +91,14 @@ const ShotsList = ({
     return () => clearTimeout(timer);
   }, [debouncedShot]);
 
+  // TODO: Remove this when APIs is available
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
   return (
     <div className="pt-6">
       <div className="w-full">
@@ -109,78 +118,82 @@ const ShotsList = ({
           <div className="p-4">Shoot Type</div>
           <div className="p-4 rounded-r-lg">Est. Time</div>
         </div>
-        {shots.map((shot) => (
-          <div
-            key={shot.id}
-            className="grid grid-cols-[50px_100px_1fr_1fr_1fr_1fr_1fr_1fr] bg-white hover:bg-gray-50 transition-shadow mt-6 py-5 shadow-sm rounded-lg items-center"
-          >
-            <div className="p-4">
-              <Checkbox
-                checked={isShotSelected(shot.id)}
-                onCheckedChange={() => handleCheckboxChange(shot.id)}
-                className="data-[state=checked]:bg-green-500 data-[state=checked]:border-none"
-              />
+        {loading ? (
+          <ShotsShimmer />
+        ) : (
+          shots.map((shot) => (
+            <div
+              key={shot.id}
+              className="grid grid-cols-[50px_100px_1fr_1fr_1fr_1fr_1fr_1fr] bg-white hover:bg-gray-50 transition-shadow mt-4 py-5 shadow-sm rounded-lg items-center"
+            >
+              <div className="p-4">
+                <Checkbox
+                  checked={isShotSelected(shot.id)}
+                  onCheckedChange={() => handleCheckboxChange(shot.id)}
+                  className="data-[state=checked]:bg-green-500 data-[state=checked]:border-none"
+                />
+              </div>
+              <div className="">
+                <Image
+                  src={shot.image}
+                  alt="Shot Thumbnail"
+                  className="w-full h-full rounded-lg"
+                  width={20}
+                  height={20}
+                />
+              </div>
+              <div className="p-4 flex justify-center">
+                <input
+                  type="number"
+                  value={shot.shotNumber}
+                  onChange={(e) => handleInputChange(shot.id, "shotNumber", Number(e.target.value))}
+                  className="w-full text-center border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4">
+                <input
+                  type="text"
+                  value={shot.description}
+                  onChange={(e) => handleInputChange(shot.id, "description", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4">
+                <input
+                  type="text"
+                  value={shot.shootSize}
+                  onChange={(e) => handleInputChange(shot.id, "shootSize", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4">
+                <input
+                  type="text"
+                  value={shot.movement}
+                  onChange={(e) => handleInputChange(shot.id, "movement", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4">
+                <input
+                  type="text"
+                  value={shot.shootType}
+                  onChange={(e) => handleInputChange(shot.id, "shootType", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4 flex justify-between">
+                <input
+                  type="text"
+                  value={shot.estimatedTime}
+                  onChange={(e) => handleInputChange(shot.id, "estimatedTime", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+                <EllipsisVertical />
+              </div>
             </div>
-            <div className="">
-              <Image
-                src={shot.image}
-                alt="Shot Thumbnail"
-                className="w-full h-full rounded-lg"
-                width={20}
-                height={20}
-              />
-            </div>
-            <div className="p-4 flex justify-center">
-              <input
-                type="number"
-                value={shot.shotNumber}
-                onChange={(e) => handleInputChange(shot.id, "shotNumber", Number(e.target.value))}
-                className="w-full text-center border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={shot.description}
-                onChange={(e) => handleInputChange(shot.id, "description", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={shot.shootSize}
-                onChange={(e) => handleInputChange(shot.id, "shootSize", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={shot.movement}
-                onChange={(e) => handleInputChange(shot.id, "movement", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={shot.shootType}
-                onChange={(e) => handleInputChange(shot.id, "shootType", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4 flex justify-between">
-              <input
-                type="text"
-                value={shot.estimatedTime}
-                onChange={(e) => handleInputChange(shot.id, "estimatedTime", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-              <EllipsisVertical />
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

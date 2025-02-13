@@ -17,7 +17,7 @@ const Navbar = ({ selectedShots }: Props) => {
         className="flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
       >
         <Image src="/icons/plus.svg" width={16} height={16} alt="download" />
-        Create Scenes
+        Create Shots
       </Button>
       <div className=" flex gap-4">
         <Button

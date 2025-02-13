@@ -16,6 +16,46 @@ const TYPE = [
   "Setting Distribution",
 ];
 
+const DATA = [
+  {
+    title: "Action vs Dialogue",
+    chart: "/chart1.svg",
+    data: [
+      { label: "Action", value: 47 },
+      { label: "Dialogue", value: 53 },
+    ],
+  },
+  {
+    title: "Interior vs Exterior",
+    chart: "/chart2.svg",
+    data: [
+      { label: "Interior", value: 35 },
+      { label: "Exterior", value: 50 },
+      { label: "Both", value: 15 },
+    ],
+  },
+  {
+    title: "Dialogue Distribution",
+    chart: "/chart3.svg",
+    data: [
+      { label: "Casey", value: 10 },
+      { label: "Jordan", value: 48 },
+      { label: "Sam", value: 27 },
+      { label: "Riley", value: 15 },
+    ],
+  },
+  {
+    title: "Setting Distribution",
+    chart: "/chart4.svg",
+    data: [
+      { label: "City Park", value: 55 },
+      { label: "Cozy Cafe", value: 25 },
+      { label: "Apartment", value: 10 },
+      { label: "Factory", value: 10 },
+    ],
+  },
+];
+
 const ScriptAnalysis = ({
   open,
   setOpen,
@@ -29,28 +69,18 @@ const ScriptAnalysis = ({
         <SheetHeader>
           <SheetTitle className=" text-2xl">Script Analysis </SheetTitle>
           <SheetDescription className=" space-y-6">
-            {TYPE.map((type) => (
-              <div key={type}>
-                <h3 className=" text-xl text-gray-800">{type}</h3>
+            {DATA.map((type) => (
+              <div key={type.title}>
+                <h3 className=" text-xl text-gray-800">{type.title}</h3>
                 <div className=" flex justify-start gap-4 mt-2">
-                  <Image src="/chart.svg" alt="" width={50} height={50} className=" w-28" />
-                  <div className=" flex flex-col justify-around items-center">
-                    <span className="flex justify-between gap-5">
-                      <p>Task 1</p>
-                      <p>52.1%</p>
-                    </span>
-                    <span className="flex justify-between gap-5">
-                      <p>Task 2</p>
-                      <p>22.8%</p>
-                    </span>
-                    <span className="flex justify-between gap-5">
-                      <p>Task 3</p>
-                      <p>13.9%</p>
-                    </span>
-                    <span className="flex justify-between gap-5">
-                      <p>Task 4</p>
-                      <p>11.2%</p>
-                    </span>
+                  <Image src={type.chart} alt="" width={50} height={50} className=" w-28" />
+                  <div className=" flex flex-col justify-center items-start gap-2">
+                    {type.data.map((item) => (
+                      <span key={item.label} className="flex justify-between gap-5">
+                        <p>{item.label}</p>
+                        <p>{item.value}</p>
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>

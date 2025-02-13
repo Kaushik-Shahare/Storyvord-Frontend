@@ -16,6 +16,7 @@ const Navbar = ({ setCreateScenesDialog, setUploadScenesDialog, selectedScenes }
       <Button
         variant="outline"
         className="flex gap-3 font-semibold rounded-md bg-transparent border border-gray-500"
+        onClick={() => setCreateScenesDialog(true)}
       >
         <Image src="/icons/plus.svg" width={16} height={16} alt="download" />
         Create Scenes

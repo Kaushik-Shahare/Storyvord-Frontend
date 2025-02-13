@@ -1,5 +1,7 @@
+"use client";
+import { ScenesShotsShimmer } from "@/components/user-dashboard/project-details/breakdown-more/previsualization/ScenesShotsShimmer";
 import ShotCard from "@/components/user-dashboard/project-details/breakdown-more/previsualization/ShotCard";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const DATA = [
   {
@@ -85,27 +87,39 @@ const DATA = [
 ];
 
 const Home = () => {
+  // TODO: Remove this when APIs is available
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold">Previsualization</h1>
-      {DATA.map((scene) => (
-        <div key={scene.id} className="mb-12 p-4">
-          <h2 className="text-lg font-semibold mb-1">{scene.title}</h2>
-          <p className="text-gray-600 mb-4 text-base">{scene.description}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {scene.shots.map((shot) => (
-              <ShotCard
-                key={shot.id}
-                image={shot.image}
-                title={shot.title}
-                description={shot.description}
-                audio={shot.audio}
-                video={shot.video}
-              />
-            ))}
+      {loading ? (
+        <ScenesShotsShimmer />
+      ) : (
+        DATA.map((scene) => (
+          <div key={scene.id} className="mb-12 p-4">
+            <h2 className="text-lg font-semibold mb-1">{scene.title}</h2>
+            <p className="text-gray-600 mb-4 text-base">{scene.description}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {scene.shots.map((shot) => (
+                <ShotCard
+                  key={shot.id}
+                  image={shot.image}
+                  title={shot.title}
+                  description={shot.description}
+                  audio={shot.audio}
+                  video={shot.video}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 };

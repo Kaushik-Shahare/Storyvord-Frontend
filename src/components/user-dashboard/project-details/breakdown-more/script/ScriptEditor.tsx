@@ -5,7 +5,8 @@ import ScriptFooter from "./ScriptFooter";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import ScriptAnalysis from "./ScriptAnalysis";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useGetProjectDetails } from "@/lib/react-query/queriesAndMutations/project";
 
 const PLACEHOLDER = `INT. SMALL BEDROOM – EARLY MORNING
 
@@ -54,11 +55,18 @@ export const MENU = [
 const ScriptEditor = () => {
   const [value, setValue] = useState(PLACEHOLDER);
   const [openAnalysis, setOpenAnalysis] = useState(false);
+  const { id: projectId } = useParams<{ id: string }>();
+
+  const {
+    data: singleProject,
+    isPending: projectDetailsLoading,
+    isError,
+  } = useGetProjectDetails(projectId);
 
   const router = useRouter();
   return (
     <div className=" font-poppins-medium h-full">
-      <ScriptHeader setOpenAnalysis={setOpenAnalysis} />
+      <ScriptHeader setOpenAnalysis={setOpenAnalysis} projectName={singleProject?.name} />
       <section className="flex justify-between items-start h-[90%] gap-6 p-3 xl:px-16 lg:px-10 lg:pt-8 lg:pb-0">
         {/* Left Section */}
         <div className="flex-1 h-[98%]">
@@ -77,7 +85,7 @@ const ScriptEditor = () => {
         <div className="w-64 xl:w-72 hidden lg:block space-y-4">
           <Button
             className=" w-full rounded-sm bg-background-2 hover:bg-background-2 relative"
-            onClick={() => router.push("script/details")}
+            onClick={() => router.push("scenes")}
           >
             Convert to Scenes
             <Image

@@ -3,12 +3,20 @@ import React from "react";
 import { EllipsisVertical } from "lucide-react";
 
 const ICONS = ["download", "analysis", "share", "message-2"];
-const ScriptHeader = ({ setOpenAnalysis }: { setOpenAnalysis: (value: boolean) => void }) => {
+const ScriptHeader = ({
+  setOpenAnalysis,
+  projectName,
+}: {
+  setOpenAnalysis: (value: boolean) => void;
+  projectName: string;
+}) => {
   return (
     <div className=" font-poppins-medium">
       <header className=" flex justify-between items-center bg-white p-3">
         <h3 className=" text-lg">Screenwriting</h3>
-        <h2 className=" text-xl hidden md:block">Project Name</h2>
+        <h2 className=" text-xl hidden md:block truncate overflow-hidden whitespace-nowrap text-ellipsis max-w-[60%]">
+          {projectName} gshdfg sdgf hsgdf sgf sgfgsfgsf
+        </h2>
         <span className=" flex justify-between items-center gap-3 md:gap-8">
           {ICONS.map((icon) => (
             <button key={icon} onClick={() => icon === "analysis" && setOpenAnalysis(true)}>

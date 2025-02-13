@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ScenesShimmer } from "./ScenesShimmer";
 
 type Scene = {
   id: number;
@@ -88,6 +89,14 @@ const ScenesList = ({
     return () => clearTimeout(timer);
   }, [debouncedScene]);
 
+  // TODO: Remove this when APIs is available
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
   return (
     <div className="pt-6">
       <div className="w-full">
@@ -105,70 +114,75 @@ const ScenesList = ({
           <div className="p-4">Script Pages</div>
           <div className="p-4 rounded-r-lg">Estimated Time</div>
         </div>
-        {scenes.map((scene) => (
-          <div
-            key={scene.id}
-            className="grid grid-cols-[50px_2fr_1fr_1fr_1fr_1fr] bg-white hover:bg-gray-50 transition-shadow mt-6 py-5 shadow-sm rounded-lg border-l-8 border-sky-300 items-center"
-          >
-            <div className="p-4">
-              <Checkbox
-                checked={isSceneSelected(scene.id)}
-                onCheckedChange={(checked) => handleCheckboxChange(scene.id)}
-                className="data-[state=checked]:bg-green-500 data-[state=checked]:border-none"
-              />
-            </div>
-            <div className="p-4 flex gap-5 items-center">
-              <p className="font-poppins-semibold">{scene.id}</p>
-              <div>
-                <input
-                  type="text"
-                  value={scene.sceneName}
-                  onChange={(e) => handleInputChange(scene.id, "sceneName", e.target.value)}
-                  className="w-full font-poppins-medium text-lg border-none outline-none focus:border-b focus:border-gray-400"
+
+        {loading ? (
+          <ScenesShimmer />
+        ) : (
+          scenes.map((scene) => (
+            <div
+              key={scene.id}
+              className="grid grid-cols-[50px_2fr_1fr_1fr_1fr_1fr] bg-white hover:bg-gray-50 transition-shadow mt-4 py-5 shadow-sm rounded-lg border-l-8 border-sky-300 items-center"
+            >
+              <div className="p-4">
+                <Checkbox
+                  checked={isSceneSelected(scene.id)}
+                  onCheckedChange={(checked) => handleCheckboxChange(scene.id)}
+                  className="data-[state=checked]:bg-green-500 data-[state=checked]:border-none"
                 />
+              </div>
+              <div className="p-4 flex gap-5 items-center">
+                <p className="font-poppins-semibold">{scene.id}</p>
+                <div>
+                  <input
+                    type="text"
+                    value={scene.sceneName}
+                    onChange={(e) => handleInputChange(scene.id, "sceneName", e.target.value)}
+                    className="w-full font-poppins-medium text-lg border-none outline-none focus:border-b focus:border-gray-400"
+                  />
+                  <input
+                    type="text"
+                    value={scene.description}
+                    onChange={(e) => handleInputChange(scene.id, "description", e.target.value)}
+                    className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                  />
+                </div>
+              </div>
+              <div className="p-4">
                 <input
                   type="text"
-                  value={scene.description}
-                  onChange={(e) => handleInputChange(scene.id, "description", e.target.value)}
+                  value={scene.characters}
+                  onChange={(e) => handleInputChange(scene.id, "characters", e.target.value)}
                   className="w-full border-none outline-none focus:border-b focus:border-gray-400"
                 />
               </div>
+              <div className="p-4">
+                <input
+                  type="date"
+                  value={scene.shootingDate}
+                  onChange={(e) => handleInputChange(scene.id, "shootingDate", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4">
+                <input
+                  type="text"
+                  value={scene.scriptPages}
+                  onChange={(e) => handleInputChange(scene.id, "scriptPages", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+              </div>
+              <div className="p-4 flex justify-between">
+                <input
+                  type="text"
+                  value={scene.estimatedTime}
+                  onChange={(e) => handleInputChange(scene.id, "estimatedTime", e.target.value)}
+                  className="w-full border-none outline-none focus:border-b focus:border-gray-400"
+                />
+                <EllipsisVertical />
+              </div>
             </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={scene.characters}
-                onChange={(e) => handleInputChange(scene.id, "characters", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="date"
-                value={scene.shootingDate}
-                onChange={(e) => handleInputChange(scene.id, "shootingDate", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4">
-              <input
-                type="text"
-                value={scene.scriptPages}
-                onChange={(e) => handleInputChange(scene.id, "scriptPages", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-            </div>
-            <div className="p-4 flex justify-between">
-              <input
-                type="text"
-                value={scene.estimatedTime}
-                onChange={(e) => handleInputChange(scene.id, "estimatedTime", e.target.value)}
-                className="w-full border-none outline-none focus:border-b focus:border-gray-400"
-              />
-              <EllipsisVertical />
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
