@@ -92,18 +92,19 @@ const SuppliersPage = ({ report, isPending, isError, handleRegenerateAiWork }: P
       </Popover>
       <h1 className="mb-6 font-poppins-semibold text-2xl text-gray-900">Recommended Suppliers</h1>
       <section className="space-y-8">
-        {Object.keys(report).map((location) => (
-          <div key={location} className="p-3 md:p-6 border border-gray-200 rounded-lg shadow-md">
-            <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
-              Location: {location}
-            </h2>
-            <main className="grid grid-cols-1 gap-3">
-              {report[location].map((supplier, index) => (
-                <SupplierCard key={`${location}-${index}`} supplier={supplier} />
-              ))}
-            </main>
-          </div>
-        ))}
+        {report &&
+          Object.keys(report).map((location) => (
+            <div key={location} className="p-3 md:p-6 border border-gray-200 rounded-lg shadow-md">
+              <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
+                Location: {location}
+              </h2>
+              <main className="grid grid-cols-1 gap-3">
+                {report[location].map((supplier, index) => (
+                  <SupplierCard key={`${location}-${index}`} supplier={supplier} />
+                ))}
+              </main>
+            </div>
+          ))}
       </section>
     </div>
   );

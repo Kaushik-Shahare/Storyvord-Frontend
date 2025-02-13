@@ -12,8 +12,29 @@ export const allReportName = [
 ] as const;
 
 export const getSuggestions = async (projectId: string) => {
-  return customFetch(`${NEW_API_URL_V2}/project/v2/get_suggestion/?project_id=${projectId}`, {
+  return customFetch(`${NEW_API_URL_V2}/project/reports/generated/?project_id=${projectId}`, {
     method: "GET",
+  });
+};
+
+export const getReportList = async (projectId: string) => {
+  return customFetch(`${NEW_API_URL_V2}/project/reports/list/?project_id=${projectId}`, {
+    method: "GET",
+  });
+};
+
+export const createCustomReport = async (data: {
+  project_id: string;
+  name: string;
+  display_name: string;
+  prompt_template: string;
+}) => {
+  return customFetch(`${NEW_API_URL_V2}/project/custom-reports/create/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
 };
 
@@ -25,15 +46,13 @@ export const startAiWork = async ({
   reportName?: string;
 }) => {
   const regenerate = reportName ? [reportName] : allReportName;
-  return customFetch(
-    `${NEW_API_URL_V2}/project/v2/ai_suggestion/?regenerate=${encodeURIComponent(JSON.stringify(regenerate))}&project_id=${projectId}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  return customFetch(`${NEW_API_URL_V2}/project/reports/generate/?project_id=${projectId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ reports: regenerate }),
+  });
 };
 
 export const getAiWorkStatus = async (taskId: string) => {

@@ -91,18 +91,19 @@ const CrewPage = ({ report, isPending, isError, handleRegenerateAiWork }: Props)
         Recommended Crew Members
       </h1>
       <section className="space-y-8">
-        {Object.keys(report).map((role) => (
-          <div key={role} className="p-3 md:p-6 border border-gray-200 rounded-lg shadow-md">
-            <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
-              Role: {role}
-            </h2>
-            <main className="grid grid-cols-1 gap-3">
-              {report[role].map((member, index) => (
-                <CrewCard key={`${role}-${index}`} crewMember={member} />
-              ))}
-            </main>
-          </div>
-        ))}
+        {report &&
+          Object.keys(report).map((role) => (
+            <div key={role} className="p-3 md:p-6 border border-gray-200 rounded-lg shadow-md">
+              <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
+                Role: {role}
+              </h2>
+              <main className="grid grid-cols-1 gap-3">
+                {report[role].map((member, index) => (
+                  <CrewCard key={`${role}-${index}`} crewMember={member} />
+                ))}
+              </main>
+            </div>
+          ))}
       </section>
     </div>
   );

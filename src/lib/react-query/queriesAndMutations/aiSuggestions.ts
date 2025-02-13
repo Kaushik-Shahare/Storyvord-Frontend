@@ -1,10 +1,12 @@
 import {
+  createCustomReport,
   getAiWorkStatus,
+  getReportList,
   getRequirements,
   getSuggestions,
   startAiWork,
 } from "@/lib/api/aiSuggestions";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const status = ["pending", "success"] as const;
@@ -24,6 +26,26 @@ export const useStartAIWork = () => {
   return useMutation({
     mutationFn: startAiWork,
     onSuccess: (data) => {
+      return data;
+    },
+  });
+};
+
+export const useGetReportList = (projectId: string) => {
+  return useQuery({
+    queryKey: ["getReportList", projectId],
+    queryFn: () => getReportList(projectId),
+  });
+};
+
+export const useCreateCustomReport = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createCustomReport,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["getReportList"],
+      });
       return data;
     },
   });

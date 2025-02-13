@@ -6,15 +6,15 @@ import LoadingUi from "./LoadingUi";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-type Name = "logistics" | "budget" | "compliance" | "culture" | "sustainability";
+export type Name = "logistics" | "budget" | "compliance" | "culture" | "sustainability";
 
 type Props = {
   report: string;
   isPending: boolean;
   isError: boolean;
   refetch: () => void;
-  handleRegenerateAiWork: (reportName: Name) => Promise<void>;
-  name: Name;
+  handleRegenerateAiWork: (reportName: string) => Promise<void>;
+  name: string;
 };
 
 const ReportDetails = ({
@@ -47,7 +47,7 @@ const ReportDetails = ({
             Try again
           </Button>
           <Button
-            onClick={() => handleRegenerateAiWork(name)}
+            onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
             className="font-poppins-medium text-sm"
             size="sm"
             variant="outline"
@@ -66,7 +66,7 @@ const ReportDetails = ({
           Unable to display data. Please check the report format.
         </p>
         <Button
-          onClick={() => handleRegenerateAiWork(name)}
+          onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
           className="font-poppins-medium text-sm"
           size="sm"
           variant="outline"
@@ -92,7 +92,7 @@ const ReportDetails = ({
         </PopoverTrigger>
         <PopoverContent className=" w-fit">
           <Button
-            onClick={() => handleRegenerateAiWork(name)}
+            onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
             className="font-poppins-medium text-sm"
             size="sm"
             variant="outline"
