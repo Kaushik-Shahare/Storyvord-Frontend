@@ -41,7 +41,7 @@ export function AddTabDialog({
         <form onSubmit={handleAddTab} className="space-y-4">
           <div className="space-y-1">
             <label htmlFor="title" className="block text-sm font-medium">
-              Title
+              Display Name
             </label>
             <input
               id="title"
@@ -63,6 +63,7 @@ export function AddTabDialog({
               className="mt-1 block w-full rounded-md border border-gray-300 p-2"
               rows={4}
               required
+              placeholder="Provide a detailed description for a more accurate AI response"
             />
           </div>
           <div className="flex justify-end gap-2 pt-4">
