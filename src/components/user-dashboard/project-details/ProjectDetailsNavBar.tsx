@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { CgProfile } from "react-icons/cg";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useGetUserProfile } from "@/lib/react-query/queriesAndMutations/auth/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ProjectDetailsNavBar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -94,18 +95,13 @@ const ProjectDetailsNavBar = () => {
           />
           <div className=" hidden sm:flex">
             <DropdownMenu>
-              <DropdownMenuTrigger className=" flex items-center gap-2 cursor-pointer">
-                {userProfile?.data?.personal_info?.image ? (
-                  <Image
-                    src={userProfile?.data?.personal_info.image}
-                    alt="Profile"
-                    className="rounded-full w-12 h-12 border-4 border-white"
-                    width={96}
-                    height={96}
-                  />
-                ) : (
-                  <CgProfile className="rounded-full w-12 h-12 border-4 border-white text-gray-500" />
-                )}
+              <DropdownMenuTrigger className=" flex items-center gap-2 cursor-pointer rounded-full">
+                <Avatar>
+                  <AvatarImage src={userProfile?.data?.personal_info?.image} alt="Created By" />
+                  <AvatarFallback>
+                    {userProfile?.data?.personal_info?.full_name?.at(0)}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {profile}
