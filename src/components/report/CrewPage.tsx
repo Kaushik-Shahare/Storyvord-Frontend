@@ -40,6 +40,14 @@ const CrewPage = ({ report, isPending, isError, handleRegenerateAiWork }: Props)
         <p className="text-xl font-poppins-semibold text-red-600">
           An error occurred while fetching data. Please try again.
         </p>
+        <Button
+          onClick={() => handleRegenerateAiWork("crew")}
+          className="font-poppins-medium text-sm"
+          size="sm"
+          variant="outline"
+        >
+          Re-Generate
+        </Button>
       </div>
     );
   }
@@ -88,7 +96,7 @@ const CrewPage = ({ report, isPending, isError, handleRegenerateAiWork }: Props)
             <h2 className="mb-4 font-poppins-semibold text-lg md:text-xl text-center text-gray-900 capitalize">
               Role: {role}
             </h2>
-            <main className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <main className="grid grid-cols-1 gap-3">
               {report[role].map((member, index) => (
                 <CrewCard key={`${role}-${index}`} crewMember={member} />
               ))}

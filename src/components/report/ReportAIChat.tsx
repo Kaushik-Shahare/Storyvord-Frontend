@@ -162,6 +162,7 @@ const ReportAIChat: React.FC = () => {
   return (
     <div className="flex flex-col h-[89vh] bg-white p-2 border rounded-md">
       <h2 className=" text-center text-lg font-poppins-medium">Ask about suggestions</h2>
+      <hr />
       <div className="overflow-y-auto p-4 bg-white flex-1">
         {messages.map((message, index) => (
           <div key={index} className="mb-4">

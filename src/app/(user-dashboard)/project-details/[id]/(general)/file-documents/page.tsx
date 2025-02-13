@@ -104,11 +104,19 @@ const FileSection: FC = () => {
       <div className="mb-5 flex flex-col md:flex-row lg:flex-row items-center lg:justify-between md:justify-between mt-5">
         <Button
           variant="outline"
-          className="flex items-center mb-4 md:mb-0 lg:mb-0"
+          className="flex items-center mb-4 md:mb-0 lg:mb-0 rounded-md"
           onClick={() => setShowForm(true)}
         >
           <FaPlus className="mr-2" /> Create Room
         </Button>
+        <a
+          href="/sustainability.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group text-white w-fit px-6 py-3 my-2 flex items-center rounded-md bg-gradient-to-r from-cyan-500 to-green-500 cursor-pointer"
+        >
+          Download Sustainability Report &#8595;
+        </a>
       </div>
       {isLoadingFiles && <p className="text-center">Fetching your files...</p>}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-5">

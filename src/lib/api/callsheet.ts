@@ -35,6 +35,14 @@ export const getCallSheets = async (projectId: string) => {
     method: "GET",
   });
 };
+export const getAiGenerateCallSheet = async (projectId: string) => {
+  return customFetch(`${NEW_API_URL_V2}/callsheets/${projectId}/ai_generate/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 export const getCallSheetDetails = async (id: number) => {
   return customFetch(`${NEW_API_URL_V2}/callsheets/details/${id}/`, {
