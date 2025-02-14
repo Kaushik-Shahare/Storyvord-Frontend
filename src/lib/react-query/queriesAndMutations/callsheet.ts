@@ -2,6 +2,7 @@ import {
   createCallSheet,
   deleteCallSheet,
   editCallSheet,
+  getAiGenerateCallSheet,
   getCallSheetDetails,
   getCallSheets,
 } from "@/lib/api/callsheet";
@@ -26,6 +27,18 @@ export const useGetCallSheets = (projectId: string) => {
   return useQuery({
     queryKey: ["getCallSheets"],
     queryFn: () => getCallSheets(projectId),
+  });
+};
+export const useGetAiGenerateCallSheet = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: getAiGenerateCallSheet,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["getCallSheets"],
+      });
+      return data;
+    },
   });
 };
 

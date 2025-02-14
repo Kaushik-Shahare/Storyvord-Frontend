@@ -1,94 +1,254 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
-
-import Tabs from "@/components/Tabs";
-import EquipmentPage from "@/components/report/EquipmentPage";
-import { useGetProjectRequirements } from "@/lib/react-query/queriesAndMutations/project";
-import {
-  useGetRequirements,
-  useGetSuggestions,
-} from "@/lib/react-query/queriesAndMutations/aiSuggestions";
+import { useEffect, useState, useMemo, FormEvent } from "react";
+import Image from "next/image";
+import { useParams, useSearchParams } from "next/navigation";
+import { Panel, PanelGroup } from "react-resizable-panels";
+import { useToast } from "@/components/ui/use-toast";
 import CrewPage from "@/components/report/CrewPage";
 import ReportDetails from "@/components/report/ReportDetails";
+import SuppliersPage from "@/components/report/SuppliersPage";
+import Tabs from "@/components/Tabs";
+import ResizeHandle from "@/components/report/ResizeHandle";
+import ReportAIChat from "@/components/report/ReportAIChat";
+import { AddTabDialog } from "@/components/report/AddTabDialog";
+import { Button } from "@/components/ui/button";
 
-const tabs = ["Crew", "Suppliers", "Logistics", "Compliance", "Culture", "Budget"];
+import {
+  useCreateCustomReport,
+  useGetAiWorkStatus,
+  useGetReportList,
+  useGetSuggestions,
+  useStartAIWork,
+} from "@/lib/react-query/queriesAndMutations/aiSuggestions";
+import { formatError } from "@/lib/utils";
+
+interface ReportTab {
+  id: number;
+  type: "system" | "custom";
+  title: string;
+  description?: string;
+}
 
 const ReportsPage = () => {
-  const [activeTab, setActiveTab] = useState("Crew");
+  const { toast } = useToast();
+  const { id: projectId }: { id: string } = useParams();
+  const searchParams = useSearchParams();
+  const task_Id = searchParams.get("taskId");
 
-  const { id: project_id }: { id: string } = useParams();
+  // Active tab state
+  const [activeTab, setActiveTab] = useState<ReportTab | null>(null);
+  const [aiWorkStatus, setAiWorkStatus] = useState<"pending" | "success">("pending");
+  const [taskId, setTaskId] = useState<string | null>(() => localStorage.getItem("taskId"));
 
-  const { data: projectRequirements } = useGetProjectRequirements(project_id);
+  // Add Tab dialog state
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [newTabTitle, setNewTabTitle] = useState("");
+  const [newTabDescription, setNewTabDescription] = useState("");
 
-  // ai Requirements suggestions
+  // Get tab data from API (system_reports & custom_reports)
   const {
-    data: getRequirementsSuggestions,
-    isPending: isPendingRequirementsSuggestions,
-    isError: isErrorRequirementsSuggestions,
-    refetch: refetchRequirement,
-  } = useGetRequirements(projectRequirements?.results[0]?.id);
+    data: tabList,
+    isPending: isPendingTablist,
+    isError: isErrorTablist,
+    refetch: refetchTabList,
+  } = useGetReportList(projectId);
+
+  // Wrap the initialization of allTabs in useMemo to avoid unnecessary re-creation.
+  const allTabs: ReportTab[] = useMemo(() => {
+    const systemTabs: ReportTab[] =
+      tabList?.system_reports?.map((rep: any) => ({
+        id: rep.id,
+        type: "system" as const,
+        title: rep.name.charAt(0).toUpperCase() + rep.name.slice(1),
+      })) || [];
+    const customTabs: ReportTab[] =
+      tabList?.custom_reports?.map((rep: any) => ({
+        id: rep.id,
+        type: "custom" as const,
+        title: rep.name
+          .split("_")
+          .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" "),
+        description: rep.description, // if description exists
+      })) || [];
+    return [...systemTabs, ...customTabs];
+  }, [tabList]);
+
+  // Set initial active tab if not already set.
+  useEffect(() => {
+    if (!activeTab && allTabs.length > 0) {
+      setActiveTab(allTabs[0]);
+    }
+  }, [activeTab, allTabs]);
+
+  // Mutation to create a new custom report (i.e. add a new tab)
   const {
-    data: suggestions,
-    isPending: isPendingSuggestions,
-    isError: isErrorSuggestions,
+    mutateAsync: createCustomReport,
+    isPending: isPendingCreateCustomReport,
+    isError: isErrorCreateCustomReport,
+  } = useCreateCustomReport();
+
+  // Get AI status and suggestions.
+  const {
+    data,
+    isPending: isPendingAiStatus,
+    isError: isErrorAiStatus,
+  } = useGetAiWorkStatus(taskId!);
+  const {
+    data: allAiReports,
+    isPending,
+    isError,
     refetch,
-  } = useGetSuggestions(project_id);
+  } = useGetSuggestions(projectId, aiWorkStatus);
+  const { mutateAsync: regenerateAiWork } = useStartAIWork();
+
+  useEffect(() => {
+    if (task_Id) {
+      setTaskId(task_Id);
+      localStorage.setItem("taskId", task_Id);
+    }
+  }, [task_Id]);
+
+  useEffect(() => {
+    if (data?.status) setAiWorkStatus(data.status);
+    if (data?.status === "success") localStorage.removeItem("taskId");
+  }, [data]);
+
+  const handleRegenerateAiWork = async (reportName: string) => {
+    try {
+      const res = await regenerateAiWork({ projectId, reportName });
+      if (res?.task_id) {
+        setTaskId(res.task_id);
+        localStorage.setItem("taskId", res.task_id);
+      }
+    } catch (error) {
+      const { title, description } = formatError(error);
+      toast({
+        title,
+        description,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle adding a new custom tab.
+  const handleAddTab = async (e: FormEvent) => {
+    e.preventDefault();
+    if (newTabTitle.trim() !== "") {
+      const transformData = {
+        project_id: projectId,
+        name: newTabTitle.toLowerCase().replaceAll(" ", "_"),
+        display_name: newTabTitle,
+        prompt_template: `Given the following project details, suggest me ${newTabDescription}, and any relevant recommendations:\nProject Budget: {budget_currency}{budget}\nProject Brief: {project_brief}\n\nFormat requirements:\n- Use markdown with header levels ## for sections, ### for subsections\n- Include tables for cost comparisons\n- Use :warning: emoji for critical risks\n- Reference related report data where applicable`,
+      };
+      try {
+        const newReport = await createCustomReport(transformData);
+        // Set the newly added tab as active.
+        setActiveTab({
+          id: newReport.id,
+          type: "custom",
+          title: newTabTitle
+            .split("_")
+            .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" "),
+          description: newTabDescription,
+        });
+        handleRegenerateAiWork(newTabTitle.toLocaleLowerCase().replaceAll(" ", "_"));
+        setNewTabTitle("");
+        setNewTabDescription("");
+        setDialogOpen(false);
+      } catch (error) {
+        const { title, description } = formatError(error);
+        toast({
+          title,
+          description,
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  // Render the content based on the active tab.
+  const renderActiveTabContent = () => {
+    if (!activeTab) return <div>No active tab</div>;
+
+    // For system and custom reports, match using report_type.
+    const reportItem = allAiReports?.reports?.find((report: any) => {
+      if (activeTab.type === "system") {
+        return report.report_type === "systemreport" && report.report_id === activeTab.id;
+      } else {
+        return report.report_type === "customreport" && report.report_id === activeTab.id;
+      }
+    });
+    const lowerTitle = activeTab.title.toLowerCase();
+
+    // Use dedicated components for "crew" and "supplier", otherwise use ReportDetails.
+    let Component;
+    if (lowerTitle === "crew") {
+      Component = CrewPage;
+    } else if (lowerTitle === "supplier") {
+      Component = SuppliersPage;
+    } else {
+      Component = ReportDetails;
+    }
+
+    const commonProps = {
+      report: reportItem ? reportItem.data : null,
+      isPending: isPending || isPendingAiStatus,
+      isError: isError || isErrorAiStatus,
+      handleRegenerateAiWork,
+      refetch,
+    };
+
+    return <Component {...commonProps} name={lowerTitle} />;
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
+    <>
+      {/* Add Tab Dialog */}
+      <AddTabDialog
+        open={isDialogOpen}
+        setOpen={setDialogOpen}
+        newTabTitle={newTabTitle}
+        setNewTabTitle={setNewTabTitle}
+        newTabDescription={newTabDescription}
+        setNewTabDescription={setNewTabDescription}
+        handleAddTab={handleAddTab}
+      />
 
-      {activeTab === "Crew" && (
-        <CrewPage
-          crewRequirements={getRequirementsSuggestions?.data.suggested_crew}
-          isPending={isPendingRequirementsSuggestions}
-          isError={isErrorRequirementsSuggestions}
-          refetch={refetchRequirement}
-        />
-      )}
-      {activeTab === "Suppliers" && (
-        <EquipmentPage
-          equipmentRequirements={getRequirementsSuggestions?.data.suggested_equipment}
-          isPending={isPendingRequirementsSuggestions}
-          isError={isErrorRequirementsSuggestions}
-          refetch={refetchRequirement}
-        />
-      )}
-      {activeTab === "Logistics" && (
-        <ReportDetails
-          report={suggestions?.data?.report.logistics}
-          isPending={isPendingSuggestions}
-          isError={isErrorSuggestions}
-          refetch={refetch}
-        />
-      )}
-      {activeTab === "Compliance" && (
-        <ReportDetails
-          report={suggestions?.data?.report.compliance}
-          isPending={isPendingSuggestions}
-          isError={isErrorSuggestions}
-          refetch={refetch}
-        />
-      )}
-      {activeTab === "Culture" && (
-        <ReportDetails
-          report={suggestions?.data?.report.culture}
-          isPending={isPendingSuggestions}
-          isError={isErrorSuggestions}
-          refetch={refetch}
-        />
-      )}
-      {activeTab === "Budget" && (
-        <ReportDetails
-          report={suggestions?.data?.report.budget}
-          isPending={isPendingSuggestions}
-          isError={isErrorSuggestions}
-          refetch={refetch}
-        />
-      )}
-    </div>
+      <PanelGroup direction="horizontal" className="container mx-auto p-4">
+        <Panel>
+          {/* Tabs Header with Add Button */}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <Tabs
+              activeTab={activeTab ? activeTab.title : ""}
+              setActiveTab={(title: string) => {
+                const selectedTab = allTabs.find((tab) => tab.title === title);
+                if (selectedTab) setActiveTab(selectedTab);
+              }}
+              tabs={allTabs.map((tab) => tab.title)}
+            />
+            <Button
+              onClick={() => setDialogOpen(true)}
+              className="flex gap-1.5 px-4 items-center rounded-md border-none bg-gray-200 hover:bg-gray-300"
+              title="Add new tab"
+              variant="outline"
+              size="sm"
+            >
+              <Image src="/icons/plus.svg" height={20} width={20} alt="plus-icon" />
+              Add
+            </Button>
+          </div>
+          {/* Content Panel */}
+          <div className="overflow-y-scroll max-h-[85vh]">{renderActiveTabContent()}</div>
+        </Panel>
+        <ResizeHandle />
+        <Panel defaultSize={25} maxSize={60} minSize={20}>
+          <ReportAIChat />
+        </Panel>
+      </PanelGroup>
+    </>
   );
 };
 

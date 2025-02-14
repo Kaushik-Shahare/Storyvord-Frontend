@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import callSheetImg from "@/assets/callsheets.png";
 import {
   useDeleteCallSheet,
+  useGetAiGenerateCallSheet,
   useGetCallSheets,
 } from "@/lib/react-query/queriesAndMutations/callsheet";
 
@@ -14,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/Loader";
 import { useToast } from "@/components/ui/use-toast";
 import CallSheetTemplate from "@/components/user-dashboard/project-details/planning/call-sheet/CallSheetTemplate";
+import AIButton from "@/components/AIButton";
+import { formatError } from "@/lib/utils";
 
 const Page: FC = () => {
   const { id: projectId }: { id: string } = useParams();
@@ -21,6 +24,11 @@ const Page: FC = () => {
   const { toast } = useToast();
 
   const { data, isPending, isError } = useGetCallSheets(projectId);
+  const {
+    mutateAsync: getAiGeneratedCallSheet,
+    isPending: isPendingAiGenerated,
+    isError: isErrorAiGenerated,
+  } = useGetAiGenerateCallSheet();
 
   const { mutateAsync: deleteCallSheet, isPending: isLoadingDelete } = useDeleteCallSheet();
 
@@ -30,6 +38,19 @@ const Page: FC = () => {
       toast({ title: "Successfully deleted" });
     } catch (error) {
       toast({ title: "Failed to delete", variant: "destructive" });
+    }
+  };
+
+  const handleGetAiGeneratedCallsheet = async () => {
+    try {
+      await getAiGeneratedCallSheet(projectId);
+    } catch (error) {
+      const { title, description } = formatError(error);
+      toast({
+        title,
+        description,
+        variant: "destructive",
+      });
     }
   };
 
@@ -48,13 +69,20 @@ const Page: FC = () => {
             department information attached.
           </div>
 
-          <Button
-            onClick={() => router.push(`/project-details/${projectId}/call-sheets/create`)}
-            className="rounded-md flex items-center space-x-2 mt-2"
-            variant="outline"
-          >
-            Create Call Sheet
-          </Button>
+          <div className=" flex justify-center gap-4 items-center my-6">
+            <Button
+              onClick={() => router.push(`/project-details/${projectId}/call-sheets/create`)}
+              className="rounded-md flex items-center space-x-2"
+              variant="outline"
+            >
+              Create Call Sheet
+            </Button>
+            <AIButton
+              text={isPendingAiGenerated ? "Generating..." : "Generate Call Sheet"}
+              onClick={handleGetAiGeneratedCallsheet}
+              disabled={isPendingAiGenerated}
+            />
+          </div>
           {isError && <p> Failed to get call sheets</p>}
           {data?.data?.length === 0 ? (
             <Image

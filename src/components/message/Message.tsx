@@ -70,7 +70,7 @@ const Message: React.FC = () => {
       return;
     }
 
-    const wsUrl = `wss://api-dev.storyvord.com:8001/ws/chat/user/${receiverId}/?access_token=${token}`;
+    const wsUrl = `wss://api-stage.storyvord.com/ws/chat/user/${receiverId}/?access_token=${token}`;
     const wsClient = new W3CWebSocket(wsUrl);
     clientRef.current = wsClient;
 

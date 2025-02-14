@@ -1,46 +1,107 @@
-import React, { ReactNode } from "react";
-import LoadingUi from "./LoadingUi";
+import React from "react";
 import Markdown from "react-markdown";
-import { Button } from "../ui/button";
 import remarkGfm from "remark-gfm";
+import { EllipsisVertical } from "lucide-react";
+import LoadingUi from "./LoadingUi";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-interface ReportDetailsProps {
+export type Name = "logistics" | "budget" | "compliance" | "culture" | "sustainability";
+
+type Props = {
   report: string;
   isPending: boolean;
   isError: boolean;
   refetch: () => void;
-}
-interface ComponentProps {
-  children: ReactNode;
-}
+  handleRegenerateAiWork: (reportName: string) => Promise<void>;
+  name: string;
+};
 
-const ReportDetails = ({ isPending, isError, report, refetch }: ReportDetailsProps) => {
+const ReportDetails = ({
+  report,
+  isPending,
+  isError,
+  name,
+  refetch,
+  handleRegenerateAiWork,
+}: Props) => {
+  // Render loading state
   if (isPending) {
-    return <LoadingUi isPending={isPending} text="Getting suggestions..." />;
+    return <LoadingUi isPending={isPending} text={`Getting ${name} suggestions...`} />;
   }
 
-  if (isError && !isPending) {
+  // Render error state
+  if (isError) {
     return (
       <div className="flex flex-col gap-6 justify-center items-center pt-8 md:p-6">
         <p className="text-xl font-poppins-semibold text-red-600">
           An error occurred while fetching data. Please try again.
         </p>
-        <Button variant="outline" onClick={() => refetch()}>
-          Try again
+        <div className=" flex justify-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="font-poppins-medium text-sm"
+            onClick={refetch}
+          >
+            Try again
+          </Button>
+          <Button
+            onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
+            className="font-poppins-medium text-sm"
+            size="sm"
+            variant="outline"
+          >
+            Re-Generate
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (typeof report !== "string") {
+    return (
+      <div className="p-4 bg-yellow-50 border grid place-content-center gap-4 border-yellow-400 text-yellow-700 rounded-md mt-10 w-fit mx-auto">
+        <p className="text-center font-poppins-semibold w-fit">
+          Unable to display data. Please check the report format.
+        </p>
+        <Button
+          onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
+          className="font-poppins-medium text-sm"
+          size="sm"
+          variant="outline"
+        >
+          Re-Generate
         </Button>
       </div>
     );
   }
 
-  const filteredData = report?.includes("```markdown\n")
-    ? report?.replace("```markdown\n", "")
-    : report;
-
+  const formatReport = (): string => {
+    if (report?.includes(":warning:")) {
+      // Replace ":warning:" with "⚠️warning:"
+      return report.replaceAll(":warning:", "⚠️");
+    }
+    return report;
+  };
   return (
-    <div className="mt-6 space-y-4 px-4 relative">
-      {/* <Button onClick={() => refetch()} className=" absolute right-0 -top-2">
-        Regenerate
-      </Button> */}
+    <div className="space-y-4 p-2 md:-p-4 relative">
+      <Popover>
+        <PopoverTrigger className=" absolute right-0">
+          <EllipsisVertical />
+        </PopoverTrigger>
+        <PopoverContent className=" w-fit">
+          <Button
+            onClick={() => handleRegenerateAiWork(name.replaceAll(" ", "_"))}
+            className="font-poppins-medium text-sm"
+            size="sm"
+            variant="outline"
+          >
+            Re-Generate
+          </Button>
+        </PopoverContent>
+      </Popover>
+
       <Markdown
         components={{
           a({ children, href }) {
@@ -93,7 +154,7 @@ const ReportDetails = ({ isPending, isError, report, refetch }: ReportDetailsPro
         }}
         remarkPlugins={[remarkGfm]}
       >
-        {filteredData}
+        {formatReport()}
       </Markdown>
     </div>
   );

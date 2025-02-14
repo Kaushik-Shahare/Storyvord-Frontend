@@ -40,7 +40,7 @@
     "general": {
       "title": "General",
       "items": {
-        "reports": "Reports",
+        "reports": "AI Co-Producer",
         "file-documents": "File & Documents",
         "task": "Tasks",
         "calendar": "Calendar",
@@ -63,7 +63,7 @@
         "script": "Script",
         "scenes": "Scenes",
         "shots": "Shots",
-        "storyboard": "Storyboard",
+        "previsualization": "Previsualization",
         "content-items": "Content Items"
       }
     },

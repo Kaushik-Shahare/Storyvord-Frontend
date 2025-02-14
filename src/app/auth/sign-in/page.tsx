@@ -8,6 +8,7 @@ import SignInForm, { SignInFormData } from "@/components/auth/SignInForm";
 import { useUserSignIn } from "@/lib/react-query/queriesAndMutations/auth/auth";
 import SideBanner from "@/components/auth/SideBanner";
 import { formatError } from "@/lib/utils";
+import { NEW_API_URL_V2 } from "@/constant/constant";
 
 const SignInPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +56,7 @@ const SignInPage = () => {
       setIsLoading(false);
     }
   };
-
+  console.log("api url: ", NEW_API_URL_V2);
   return (
     <section className="flex md:h-screen h-full justify-start">
       <SideBanner />
